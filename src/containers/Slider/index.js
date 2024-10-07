@@ -8,26 +8,27 @@ const Slider = () => {
   const { data } = useData();
   const [index, setIndex] = useState(0);
   const byDateDesc = data?.focus.sort((evtA, evtB) =>
-    new Date(evtA.date) < new Date(evtB.date) ? -1 : 1
-  );
-  const nextCard = () => {
-    setTimeout(
-      () => setIndex(index < byDateDesc.length ? index + 1 : 0),
-      5000
-    );
-  };
+    new Date(evtA.date) < new Date(evtB.date) ? -1 : 1);
+  const datafoCus= data?.focus;
+
+
+
   useEffect(() => {
-    nextCard();
+    const timElapsed = setTimeout(() => {
+      setIndex((prevIndex) => (prevIndex < byDateDesc.length - 1 ? prevIndex + 1 : 0));
+    }, 5000)
+    return () => clearTimeout(timElapsed)
+
   });
   return (
     <div className="SlideCardList">
       {byDateDesc?.map((event, idx) => (
-        <>
+        <div key={event.title}>
+
           <div
-            key={event.title}
-            className={`SlideCard SlideCard--${
-              index === idx ? "display" : "hide"
-            }`}
+            
+            className={`SlideCard SlideCard--${index === idx ? "display" : "hide"
+              }`}
           >
             <img src={event.cover} alt="forum" />
             <div className="SlideCard__descriptionContainer">
@@ -39,18 +40,21 @@ const Slider = () => {
             </div>
           </div>
           <div className="SlideCard__paginationContainer">
-            <div className="SlideCard__pagination">
-              {byDateDesc.map((_, radioIdx) => (
-                <input
-                  key={`${event.id}`}
+              {datafoCus?.map((evt, idex) => (
+                <div key={evt.title} className="SlideCard__pagination">
+              
+                
+                <input 
                   type="radio"
                   name="radio-button"
-                  checked={idx === radioIdx}
+                  checked={index === idex}
+                  onChange={() => setIndex(idex)}
+                  
                 />
-              ))}
             </div>
+              ))}
           </div>
-        </>
+        </div>
       ))}
     </div>
   );

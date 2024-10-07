@@ -6,11 +6,11 @@ import "./style.scss";
 const EventCard = ({
   imageSrc,
   imageAlt,
-  date = new Date(),
+  date = new Date("2022-04-01"),
   title,
   label,
-  small = false,
-  ...props
+  small = "false",
+...props
 }) => (
     <div
       data-testid="card-testid"

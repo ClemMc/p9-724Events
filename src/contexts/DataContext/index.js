@@ -1,3 +1,4 @@
+
 import PropTypes from "prop-types";
 import {
   createContext,
@@ -19,17 +20,32 @@ export const api = {
 export const DataProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
+  // Ajout du state "last"
+  const [last, setLast] = useState(null);
   const getData = useCallback(async () => {
     try {
-      setData(await api.loadData());
+      setData(await api.loadData());      
     } catch (err) {
       setError(err);
     }
   }, []);
+
+// Ajout de la fonction getLastData pour récupèrer la DERNIERE data
+  const getLastData = useCallback(async () => {
+    try {
+      const datas = await api.loadData();
+      setLast(datas.events[datas.events.length - 1]);
+    } catch (err) {
+      setError(err);
+    }
+  },[]);
+
   useEffect(() => {
     if (data) return;
     getData();
-  });
+    // Faire appel à la fonction getLastData
+    getLastData();
+  }, );
   
   return (
     <DataContext.Provider
@@ -37,6 +53,8 @@ export const DataProvider = ({ children }) => {
       value={{
         data,
         error,
+        // Exporter last pour pouvoir l'utiliser sur la page d'accueil
+        last,
       }}
     >
       {children}
